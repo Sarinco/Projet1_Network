@@ -1,0 +1,10 @@
+
+Voir vidéos
+
+1) Démarrage meeting - mute - unmute - share screen - stop sharing - mute - stop meeting
+
+2) Micro + Vidéo
+
+3) Seulement partage vidéo
+
+4) Discussion par message

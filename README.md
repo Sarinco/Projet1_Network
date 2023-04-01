@@ -1,3 +1,7 @@
-# Projet1_Network
+# Projet 1 - Analyse de traces d'un logiciel de vidéo-conférence
 
-hello mathieu haha, si t'as des messages a faire passer sur les codes que tu as fait, n'hésite pas a les faire passer par ici
+## Code et commandes
+
+## Messages
+
+
