@@ -11,24 +11,24 @@
 ## 1. Scénarios
 
 **Login et Authentification**
-- [] En cours (Antoine ?)
-- [] Terminé
+- [x] En cours (Antoine ?)
+- [ ] Terminé
 
 **Appel audio**
-- [] En cours
-- Terminé
+- [ ] En cours
+- [ ] Terminé
 
 **Appel vidéo**
-- [] En cours
-- Terminé
+- [ ] En cours
+- [ ] Terminé
 
 **Partage écran**
-- [] En cours
-- Terminé
+- [ ] En cours
+- [ ] Terminé
 
 **Tableau blanc**
-- [] En cours
-- Terminé
+- [ ] En cours
+- [ ] Terminé
 
 ## 2. Récapitualif (~ Conclusion)
 
