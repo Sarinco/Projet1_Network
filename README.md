@@ -4,7 +4,33 @@
 
 ## Messages
 
-Ci dessous : une to do list de ce qu'on doit faire pour le projet
+-> Voir Messenger discussion structure
+
+## TODO List
+
+## 1. Scénarios
+
+**Login et Authentification**
+- [] En cours (Antoine ?)
+- [] Terminé
+
+**Appel audio**
+- [] En cours
+- Terminé
+
+**Appel vidéo**
+- [] En cours
+- Terminé
+
+**Partage écran**
+- [] En cours
+- Terminé
+
+**Tableau blanc**
+- [] En cours
+- Terminé
+
+## 2. Récapitualif (~ Conclusion)
 
 **DNS**  
 
