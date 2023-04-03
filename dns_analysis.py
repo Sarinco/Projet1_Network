@@ -47,23 +47,23 @@ def graphmaker(traceList):
         traceList (pcapng files): a list of packet trace
     """
     nbPacket = []
-    names = []
+    names = ["visioconférence micro+video", "visioconférence partage écran",
+             "messagerie intégrée", "lancement et connexion a l'appli"]
     for traces in traceList:
         nbPacket.append(CountDNSPackets(traces))
-        names.append(traces.split("/")[1].split("_")[1])
     
     plt.bar(names, nbPacket)
     plt.xticks(rotation=30)
-    plt.title("Nombre de nom de domaines résolus par trace")
+    plt.title("Nombre de noms de domaines résolus par trace")
     plt.tight_layout()
     plt.savefig("graphs/dns_bar_graph.png")
     
     #plot a graph with the amount of dns packets per second for seven minutes
-    fig, ax = plt.subplots(len(traceList), 1, figsize=(10, 10))
+    fig, ax = plt.subplots(2, 2, sharey=True)
+    fig.suptitle("Nombre de paquets DNS par seconde par trace")
     for i in range(len(traceList)):
         print("capture de :" + traceList[i])
-        timeOfPacket = np.zeros(60*7)
-        totalTime = [i for i in range(60*7)]
+        timeOfPacket = np.zeros(90)
         
         captotal = ps.FileCapture(traceList[i])
         firstPacketTime = captotal[0].sniff_time
@@ -73,25 +73,52 @@ def graphmaker(traceList):
         for pkt in cap:
             timeOfPacket[int((pkt.sniff_time-firstPacketTime).total_seconds())] += 1
         
-        ax[i].set_title(traceList[i].split("/")[1].split("_")[1])      
-        ax[i].plot(timeOfPacket)
-        ax[i].grid()
+        ax[int(i/2), i%2].set_title(names[i])
+        ax[int(i/2), i%2].plot(timeOfPacket)
+        ax[int(i/2), i%2].grid()
 
         
         
         cap.close()
+    for a in ax.flat:
+        a.set(xlabel='temps (s)', ylabel='nombre de paquets')
+    for a in ax.flat:
+        a.label_outer()
     plt.tight_layout()
     plt.savefig("graphs/dns_packetTime_graph.png")
     
+def dnsDomainNameResolved(trace):
+        cap = ps.FileCapture(trace, display_filter='dns')
+        print("capture de :" + trace)
+        for pkt in cap:
+            print(pkt.dns.qry_name)
+        cap.close()
+        print("=======================================")
+        
+def dnsAuthoritativeServer(trace):
+    cap = ps.FileCapture(trace, display_filter='dns')
+    print("capture de :" + trace)
+    for pkt in cap:
+        if pkt.dns.flags_response == "1":
+                print("authoritative server:" + pkt.dns.authority_response.name)
+    cap.close()
+    print("=======================================")
+    
 if __name__ == '__main__':
-    onlyfiles = [f for f in listdir("packet_traces") if isfile("packet_traces/" + f)]
-    # print(onlyfiles)
-    for i in range(len(onlyfiles)):
-        onlyfiles[i] = "packet_traces/" + onlyfiles[i]
+    onlyfiles = ["packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng",
+                 "packet_traces/M_Linux/FileCapture_Any_Scenario3_Mathieu.pcapng",
+                 "packet_traces/M_Linux/FileCapture_Any_Scenario4_Mathieu.pcapng",
+                 "packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng"]
         
     
     if sys.argv[1] == "graph":
         graphmaker(onlyfiles)
+    elif sys.argv[1] == "domain":
+        for traces in onlyfiles:
+            dnsDomainNameResolved(traces)
+    elif sys.argv[1] == "authoritative":
+        for traces in onlyfiles:
+            dnsAuthoritativeServer(traces)
     else:    
         print("\n=======================================")
         for traces in onlyfiles:
