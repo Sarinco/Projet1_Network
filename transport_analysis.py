@@ -23,7 +23,7 @@ cat = ["UDP", "TCP"]
 p = cap_login[0]
 print(p.transport_layer)
 
-"""
+
 i = 0
 nt = 0
 nt_save = []
@@ -38,9 +38,10 @@ for cap in [cap_login,cap_call,cap_screen,cap_msg]:
             nt+=1
             nt_save.append(pkt)
     i+=1
-"""
 
-val = np.array([[56,523],[6352,1274],[4463,989],[7,148]])
+
+#val = np.array([[56,523],[6352,1274],[4463,989],[7,148]])
+val = np.array(val)
 
 pourcentages = 100 * val/ np.sum(val, axis=1, keepdims=True)
 
