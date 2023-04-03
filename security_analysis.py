@@ -4,46 +4,57 @@ import numpy as np
 
 # voir description des scénarios rapport
 
-f_login = "packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng"
-f_call = "packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng"
-f_screen = "packet_traces/M_Linux/FileCapture_Any_Scenario3_Mathieu.pcapng"
-f_msg = "packet_traces/M_Linux/FileCapture_Any_Scenario4_Mathieu.pcapng"
+if False:
 
-cap_login = pyshark.FileCapture(f_login, display_filter='dns', use_json=True)
-cap_call = pyshark.FileCapture(f_call, display_filter='dns', use_json=True)
-cap_screen = pyshark.FileCapture(f_screen, display_filter='dns', use_json=True)
-cap_msg = pyshark.FileCapture(f_msg, display_filter='dns', use_json=True)
+    f_login = "packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng"
+    f_call = "packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng"
+    f_screen = "packet_traces/M_Linux/FileCapture_Any_Scenario3_Mathieu.pcapng"
+    f_msg = "packet_traces/M_Linux/FileCapture_Any_Scenario4_Mathieu.pcapng"
 
-### VERIFICATION DNS SECURISE (extension DNSSEC)
+    cap_login = pyshark.FileCapture(f_login, display_filter='dns', use_json=True)
+    cap_call = pyshark.FileCapture(f_call, display_filter='dns', use_json=True)
+    cap_screen = pyshark.FileCapture(f_screen, display_filter='dns', use_json=True)
+    cap_msg = pyshark.FileCapture(f_msg, display_filter='dns', use_json=True)
 
-def useDNSSEC():
-    count = 0
-    for cap in [cap_login,cap_call,cap_screen,cap_msg]:
-        for pkt in cap:
-            if(pkt.dns.add_rr != '0'):
-                count +=1 
-                print("Extension détectée ! ")
-                print(pkt)
+    ### VERIFICATION DNS SECURISE (extension DNSSEC)
 
-    print("Utilisation de l'extension DNSSEC : " , count!=0)
-    return count!=0
+    def useDNSSEC():
+        count = 0
+        for cap in [cap_login,cap_call,cap_screen,cap_msg]:
+            for pkt in cap:
+                if(pkt.dns.add_rr != '0'):
+                    count +=1 
+                    print("Extension détectée ! ")
+                    print(pkt)
 
-cap_login.close()
-cap_call.close()
-cap_screen.close()
-cap_msg.close()
+        print("Utilisation de l'extension DNSSEC : " , count!=0)
+        return count!=0
+
 
 ### Statistiques Version TLS
 
 
 ############################# A CORRIGER -> difficulté de lire la version comme sur Wireshark
 
-cap_login = pyshark.FileCapture(f_login, display_filter='tls',use_json=True)
-cap_call = pyshark.FileCapture(f_call, display_filter='tls', use_json=True)
-cap_screen = pyshark.FileCapture(f_screen, display_filter='tls', use_json=True)
-cap_msg = pyshark.FileCapture(f_msg, display_filter='tls', use_json=True)
+
+f_login = "packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng"
+f_call = "packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng"
+f_screen = "packet_traces/M_Linux/FileCapture_Any_Scenario3_Mathieu.pcapng"
+f_msg = "packet_traces/M_Linux/FileCapture_Any_Scenario4_Mathieu.pcapng"
 
 
+cap_login = pyshark.FileCapture(input_file = f_login, display_filter='tls.version != 0x0301')
+cap_call = pyshark.FileCapture(f_call, display_filter='tls', only_summaries = True)
+cap_screen = pyshark.FileCapture(f_screen, display_filter='tls', only_summaries = True)
+cap_msg = pyshark.FileCapture(f_msg, display_filter='tls', only_summaries = True)
+
+for pkt in cap_login:
+    print(pkt)
+
+
+####################### EN COURS DE MODIF : pyshark pue la merde on sait pas itérer avec les récaps
+
+"""
 x = ['Authentification', 'Appel audio-vidéo', 'Partage d\'écran' , 'Messagerie']
 val = []
 
@@ -51,19 +62,13 @@ val = []
 for cap in [cap_login,cap_call,cap_screen,cap_msg]:
     data = {}
     for pkt in cap:
-        # print(pkt.number)
-        try:
-            if(type(pkt.tls.record) is list):
-                tls_version = pkt.tls.record[0].version
-            else :
-                tls_version = pkt.tls.record.version
-            #print(tls_version)
-            if tls_version not in data : 
-                data[tls_version] = 1
-            else :
-                data[tls_version] +=1
-        except:
-            continue
+        tls_version = pkt.protocol
+        if("TLS" not in str(tls_version)):
+            continue #skip ce pkt
+        if(tls_version not in data.keys()):
+            data[tls_version] = 1
+        else :
+            data[tls_version] +=1 
     val.append(data)
 
 print(val)
@@ -100,3 +105,11 @@ plt.ylabel("Pourcentage [%]")
 plt.xlabel("Fonctionnalités")
 
 plt.show()
+
+
+cap_login.close()
+cap_call.close()
+cap_screen.close()
+cap_msg.close()
+
+"""
