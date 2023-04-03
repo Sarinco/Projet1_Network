@@ -8,6 +8,8 @@
 
 ### Ptites infos sur mes expériences
 
+Go mettre ca dans un fichier plutot ?
+
 - authentication 01  
   - **nb paquets :** 1156
 - authentication 02  
@@ -76,7 +78,7 @@
 
 **Couche Transport**  
 
-- [ ] En cours  
+- [X] En cours (Mathieu)
 - [ ] Terminé  
 - [ ] Relu et corrigé  
 
