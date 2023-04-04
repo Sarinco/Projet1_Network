@@ -94,3 +94,90 @@ if plot_TLS_version_repartition :
     plt.ylabel("Pourcentage [%]")
     plt.xlabel("Fonctionnalités")
     plt.show()
+
+
+### Analyse des certificats
+
+
+
+
+# Durée de vie des certificats ?
+
+ttl_certificates = False
+
+
+if ttl_certificates : 
+
+    f_login = "packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng"
+    f_call = "packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng"
+    f_screen = "packet_traces/M_Linux/FileCapture_Any_Scenario3_Mathieu.pcapng"
+    f_msg = "packet_traces/M_Linux/FileCapture_Any_Scenario4_Mathieu.pcapng"
+
+    cap_login = pyshark.FileCapture(f_login, display_filter='tls.handshake.certificate', use_json=0)
+    cap_call = pyshark.FileCapture(f_call, display_filter='tls.handshake.certificate', use_json=0)
+    cap_screen = pyshark.FileCapture(f_screen, display_filter='tls.handshake.certificate', use_json=0)
+    cap_msg = pyshark.FileCapture(f_msg, display_filter='tls.handshake.certificate', use_json=0)
+
+    data = {} 
+
+    for cap in [cap_login,cap_call,cap_screen,cap_msg]:
+        for pkt in cap :
+            try : 
+                ttl = pkt.ip.ttl
+                if(ttl not in data.keys()):
+                    data[ttl] = 1
+                else:
+                    data[ttl] += 1 
+            except:
+                print("no ip layer")
+                continue
+
+    print(data)
+
+
+# Algo de chiffrement 
+# Ligne pour récupérer : pkt.tls.record.handshake.certificates.certificate_tree[i].algorithmIdentifier_element.id
+
+algochiffrement = False
+
+if algochiffrement : 
+
+    f_login = "packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng"
+    f_call = "packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng"
+    f_screen = "packet_traces/M_Linux/FileCapture_Any_Scenario3_Mathieu.pcapng"
+    f_msg = "packet_traces/M_Linux/FileCapture_Any_Scenario4_Mathieu.pcapng"
+
+    cap_login = pyshark.FileCapture(f_login, display_filter='tls.handshake.certificate', use_json=1)
+    cap_call = pyshark.FileCapture(f_call, display_filter='tls.handshake.certificate', use_json=1)
+    cap_screen = pyshark.FileCapture(f_screen, display_filter='tls.handshake.certificate', use_json=1)
+    cap_msg = pyshark.FileCapture(f_msg, display_filter='tls.handshake.certificate', use_json=1)
+
+
+    data = {} 
+
+    for cap in [cap_login,cap_call,cap_screen,cap_msg]:
+        for pkt in cap :
+            algos = pkt.tls.record.handshake.certificates.certificate_tree
+            try : 
+                for algo in algos:
+                    a = algo.algorithmIdentifier_element.id
+                    if(a not in data.keys()):
+                        data[a] = 1
+                    else:
+                        data[a] += 1 
+            except:
+                print("error")
+                continue
+
+    print(data)
+
+    labels = list(data.keys())
+    values = list(data.values())
+
+    explode = (0, 0.1)  # only "explode" the 2nd slice
+
+    fig, ax = plt.subplots()
+    ax.pie(values, explode=explode, labels=labels, autopct='%1.1f%%',
+            shadow=True, startangle=90, colors = ["tab:blue","tab:red"], wedgeprops={"alpha": 0.9} )
+    plt.title("Algorithmes de chiffrement utilisés")
+    plt.show()
