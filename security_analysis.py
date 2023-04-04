@@ -2,9 +2,11 @@ import pyshark
 import matplotlib.pyplot as plt
 import numpy as np
 
-# voir description des scénarios rapport
+# Voir RAPPORT pour la description des scénarios
 
-if False:
+verification_DNSSEC = False # mettre à True pour effectuer la vérification
+
+if verification_DNSSEC:
 
     f_login = "packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng"
     f_call = "packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng"
@@ -33,83 +35,62 @@ if False:
 
 ### Statistiques Version TLS
 
+# Note : Finalement, les données pour la version de TLS sont directement ramenées depuis Wireshark et non via pyshark
+# Il n'y a pas de moyen simple d'accéder à la version (!= pkt.tls.record.version), moyen via only_summaries 
+# mais alors impossible d'itérer sur les packets.
 
-############################# A CORRIGER -> difficulté de lire la version comme sur Wireshark
-
-
-f_login = "packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng"
-f_call = "packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng"
-f_screen = "packet_traces/M_Linux/FileCapture_Any_Scenario3_Mathieu.pcapng"
-f_msg = "packet_traces/M_Linux/FileCapture_Any_Scenario4_Mathieu.pcapng"
-
-
-cap_login = pyshark.FileCapture(input_file = f_login, display_filter='tls.version != 0x0301')
-cap_call = pyshark.FileCapture(f_call, display_filter='tls', only_summaries = True)
-cap_screen = pyshark.FileCapture(f_screen, display_filter='tls', only_summaries = True)
-cap_msg = pyshark.FileCapture(f_msg, display_filter='tls', only_summaries = True)
-
-for pkt in cap_login:
-    print(pkt)
+if False : 
+    f_login = "packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng"
+    f_call = "packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng"
+    f_screen = "packet_traces/M_Linux/FileCapture_Any_Scenario3_Mathieu.pcapng"
+    f_msg = "packet_traces/M_Linux/FileCapture_Any_Scenario4_Mathieu.pcapng"
 
 
-####################### EN COURS DE MODIF : pyshark pue la merde on sait pas itérer avec les récaps
+    cap_login = pyshark.FileCapture(input_file = f_login, display_filter='tls')
+    cap_call = pyshark.FileCapture(f_call, display_filter='tls')
+    cap_screen = pyshark.FileCapture(f_screen, display_filter='tls')
+    cap_msg = pyshark.FileCapture(f_msg, display_filter='tls')
 
-"""
-x = ['Authentification', 'Appel audio-vidéo', 'Partage d\'écran' , 'Messagerie']
-val = []
-
-
-for cap in [cap_login,cap_call,cap_screen,cap_msg]:
-    data = {}
-    for pkt in cap:
-        tls_version = pkt.protocol
-        if("TLS" not in str(tls_version)):
-            continue #skip ce pkt
-        if(tls_version not in data.keys()):
-            data[tls_version] = 1
-        else :
-            data[tls_version] +=1 
-    val.append(data)
-
-print(val)
-
-v = []
-for i in range(4):
-    v.append([])
-    dic = val[i]
-    keys = list(dic.keys())
-    for j in range(len(keys)):
-        v[i].append(dic[keys[j]])
-
-v = np.array(v)
-cat = list(val[0].keys())
-
-pourcentages = 100 * v/ np.sum(v, axis=1, keepdims=True)
-
-fig, ax = plt.subplots()
-
-largeur_barre = 0.5
-colors = ["tab:blue","tab:red"]
-#colors = ["dodgerblue","crimson"]
-
-for i, cat in enumerate(cat):
-    ax.bar(x, pourcentages[:,i], width=largeur_barre, label=cat,color = colors[i],alpha = 0.9, bottom=np.sum(pourcentages[:,:i], axis=1))
-    #ax.bar(x, pourcentages[:,i], width=largeur_barre, label=cat, bottom=np.sum(pourcentages[:,:i], axis=1))
-
-ax.set_xticks(x)
-ax.set_xticklabels(x)
-#plt.xticks(rotation=45, ha='right')
-ax.legend()
-plt.title("Protocoles de transport")
-plt.ylabel("Pourcentage [%]")
-plt.xlabel("Fonctionnalités")
-
-plt.show()
+    for cap in [cap_login,cap_call,cap_screen,cap_msg]:
+        data = {}
+        for pkt in cap:
+            tls_version = pkt.protocol
+            if("TLS" not in str(tls_version)):
+                continue #skip ce pkt
+            if(tls_version not in data.keys()):
+                data[tls_version] = 1
+            else :
+                data[tls_version] +=1 
+        val.append(data)
 
 
-cap_login.close()
-cap_call.close()
-cap_screen.close()
-cap_msg.close()
 
-"""
+plot_TLS_version_repartition = False # mettre à True pour afficher le graphe
+
+if plot_TLS_version_repartition : 
+
+    x = ['Authentification', 'Appel audio-vidéo', 'Partage d\'écran' , 'Messagerie']
+    cat = ["TLSv1.3","TLSv1.2"]
+    val = [[79,140],[580,32],[423,37],[11,48]] # valeurs depuis Wireshark
+    v = np.array(val)
+
+    pourcentages = 100 * v/ np.sum(v, axis=1, keepdims=True)
+
+    fig, ax = plt.subplots()
+
+    largeur_barre = 0.5
+    colors = ["tab:blue","tab:red"]
+    #colors = ["dodgerblue","crimson"]
+
+    for i, cat in enumerate(cat):
+        ax.bar(x, pourcentages[:,i], width=largeur_barre, label=cat,color = colors[i],alpha = 0.9, bottom=np.sum(pourcentages[:,:i], axis=1))
+        #ax.bar(x, pourcentages[:,i], width=largeur_barre, label=cat, bottom=np.sum(pourcentages[:,:i], axis=1))
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(x)
+    #plt.xticks(rotation=45, ha='right')
+    ax.legend()
+    plt.title("Versions TLS")
+    plt.ylabel("Pourcentage [%]")
+    plt.xlabel("Fonctionnalités")
+    plt.show()
