@@ -100,7 +100,16 @@ def dnsAuthoritativeServer(trace):
     print("capture de :" + trace)
     for pkt in cap:
         if pkt.dns.flags_response == "1":
-                print("authoritative server:" + pkt.dns.authority_response.name)
+            if int(pkt.dns.count_auth_rr) > 0:
+                    print(pkt.dns.resp_name)
+    cap.close()
+    print("=======================================")
+    
+def dnsGetTypeOfQuery(trace):
+    cap = ps.FileCapture(trace, display_filter='dns')
+    print("capture de :" + trace)
+    for pkt in cap:
+            print(pkt.dns.qry_type)
     cap.close()
     print("=======================================")
     
@@ -119,6 +128,9 @@ if __name__ == '__main__':
     elif sys.argv[1] == "authoritative":
         for traces in onlyfiles:
             dnsAuthoritativeServer(traces)
+    elif sys.argv[1] == "type":
+        for traces in onlyfiles:
+            dnsGetTypeOfQuery(traces)
     else:    
         print("\n=======================================")
         for traces in onlyfiles:
