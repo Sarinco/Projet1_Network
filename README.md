@@ -4,7 +4,10 @@
 
 ## Messages
 
-Note : informations sur expérience dans le fichier "infos_exp_Antoine"
+Exemple de bons rapport pour partie DNS : 
+- https://blog.computer-networking.info/files/openclassrooms.pdf
+- https://blog.computer-networking.info/files/nordpresse.pdf
+- https://blog.computer-networking.info/files/zalando.pdf
 
 ## TODO List
 
@@ -22,18 +25,23 @@ Note : informations sur expérience dans le fichier "infos_exp_Antoine"
 
 **Couche Transport**  
 
-- [x] En cours (Mathieu) -> Questions
-- [ ] Terminé  
+- [x] En cours (Mathieu)
+- [x] Terminé  (quasiement -> question)
 - [ ] Relu et corrigé  
 
 **Chiffrement et sécurité**  
 
 - [x] En cours (Mathieu)
-- [ ] Terminé  
+- [x] Terminé  (quasiement -> question)
 - [ ] Relu et corrigé  
 
 **Application**  
 
-- [ ] En cours  
+- [x] En cours (Mathieu)
 - [ ] Terminé  
 - [ ] Relu et corrigé  
+
+**Questions**
+
+- Plusieurs connexions vers un même nom de domaine dans la couche transport ?
+- UDP chiffré ?
