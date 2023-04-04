@@ -109,7 +109,15 @@ def dnsGetTypeOfQuery(trace):
     cap = ps.FileCapture(trace, display_filter='dns')
     print("capture de :" + trace)
     for pkt in cap:
-            print(pkt.dns.qry_type)
+            print(pkt.dns.flags_recdesired)
+    cap.close()
+    print("=======================================")
+    
+def dnsAdditionalRecords(trace):
+    cap = ps.FileCapture(trace, display_filter='dns')
+    print("capture de :" + trace)
+    for pkt in cap:
+            print(pkt.dns.field_names)
     cap.close()
     print("=======================================")
     
@@ -131,6 +139,9 @@ if __name__ == '__main__':
     elif sys.argv[1] == "type":
         for traces in onlyfiles:
             dnsGetTypeOfQuery(traces)
+    elif sys.argv[1] == "additional":
+        for traces in onlyfiles:
+            dnsAdditionalRecords(traces)
     else:    
         print("\n=======================================")
         for traces in onlyfiles:

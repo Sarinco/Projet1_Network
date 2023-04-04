@@ -14,12 +14,12 @@ Exemple de bons rapport pour partie DNS :
 **DNS**  
 
 - [x] En cours (Antoine)  
-- [ ] Terminé  
+- [X] Terminé  
 - [ ] Relu et corrigé  
 
 **Couche réseau**
 
-- [ ] En cours  
+- [X] En cours  (Antoine)
 - [ ] Terminé  
 - [ ] Relu et corrigé  
 
