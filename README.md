@@ -27,7 +27,7 @@ python dns_analysis.py option
 Pour exécuter les programmes `network_analysis.py` ou `transport_analysis.py`, lancer les commandes suivantes dans le terminal sans argument particulier : 
 ```
 python network_analysis.py
-python transport_analysis.py option
+python transport_analysis.py
 ```
 
 Pour exécuter le programme `security_analysis.py`, lancer la commande suivante dans le terminal
