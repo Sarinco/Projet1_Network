@@ -1,47 +1,51 @@
-# Projet 1 - Analyse de traces d'un logiciel de vidéo-conférence
+# LINFO1341 - Projet 1 : Analyse de traces d'un logiciel de vidéo-conférence (Groupe Zoom7)
 
-## Code et commandes
+Ce répertoire GitHub contient l'ensemble du code Python utilisant `PyShark` permettant l'analyse de nos traces capturées avec `WireShark`.
 
-## Messages
+## Captures
 
-Exemple de bons rapport pour partie DNS : 
-- https://blog.computer-networking.info/files/openclassrooms.pdf
-- https://blog.computer-networking.info/files/nordpresse.pdf
-- https://blog.computer-networking.info/files/zalando.pdf
+- Les fichiers de captures utilisés se trouvent dans le répertoire 'packet_traces'.
+- La description des scénarios se trouvent dans 'infos_capture.md'.
 
-## TODO List
+## Graphes
 
-**DNS**  
+- Les graphes produits se trouvent dans le répertoire 'graphs'.
 
-- [x] En cours (Antoine)  
-- [X] Terminé  
-- [ ] Relu et corrigé  
+## Code
 
-**Couche réseau**
+Pour exécuter le programme `dns_analysis.py`, lancer la commande suivante dans le terminal : 
+```
+python dns_analysis.py option
+```
+- avec *option* : 
+    - *graph* pour générer les graphes
+    - *domain* pour afficher sur la sortie standard les noms de domaines résolus
+    - *authoritative* pour afficher sur la sortie standard les serveurs autoritatifs rencontrés
+    - *type* pour afficher sur la sortie standard si les requêtes DNS sont récursives ou non
+    - *additional* pour afficher sur la sortie standard les différents champs possibles pour chaque paquet DNS
 
-- [X] En cours  (Antoine)
-- [ ] Terminé  
-- [ ] Relu et corrigé  
+Pour exécuter les programmes `network_analysis.py` ou `transport_analysis.py`, lancer les commandes suivantes dans le terminal sans argument particulier : 
+```
+python network_analysis.py
+python transport_analysis.py option
+```
 
-**Couche Transport**  
+Pour exécuter le programme `security_analysis.py`, lancer la commande suivante dans le terminal
+```
+python security_analysis.py option
+```
+- avec *option* : 
+    - *checkDNSSEC* pour vérifier si l'extension DNSSEC est utilisée ou non
+    - *TLS* pour afficher le graphe représentant la répartition des versions de TLS
+    - *certTTL* pour afficher sur la sortie standard les Time-To-Live des paquets contenant les certificats
+    - *algo* pour afficher le graphe représentant la répartition des algorithmes de chiffrement des certificats
 
-- [x] En cours (Mathieu)
-- [x] Terminé  (quasiement -> question)
-- [ ] Relu et corrigé  
+Pour exécuter le programme `application_analysis.py`, lancer la commande suivante dans le terminal
+```
+python application_analysis.py option
+```
+- avec *option* : 
+    - *plot_pkt* pour afficher le graphe représentant le nombre de paquet échangés en fonction du temps
+    - *volume* pour calculer les volumes UDP de données échangées pour 1 minute d'appel audio, d'appel audio-vidéo, de partage d'écran
 
-**Chiffrement et sécurité**  
 
-- [x] En cours (Mathieu)
-- [x] Terminé  (quasiement -> question)
-- [ ] Relu et corrigé  
-
-**Application**  
-
-- [x] En cours (Mathieu)
-- [ ] Terminé  
-- [ ] Relu et corrigé  
-
-**Questions**
-
-- Plusieurs connexions vers un même nom de domaine dans la couche transport ?
-- UDP chiffré ?

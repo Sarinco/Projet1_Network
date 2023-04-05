@@ -1,12 +1,10 @@
 import pyshark
 import matplotlib.pyplot as plt
 import numpy as np
+import sys
 
-# Voir RAPPORT pour la description des scénarios
-
-verification_DNSSEC = False # mettre à True pour effectuer la vérification
-
-if verification_DNSSEC:
+# Vérifie que l'extension DNSSEC n'est pas utilisée
+def check_DNSSEC():
 
     f_login = "packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng"
     f_call = "packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng"
@@ -19,18 +17,14 @@ if verification_DNSSEC:
     cap_msg = pyshark.FileCapture(f_msg, display_filter='dns', use_json=True)
 
     ### VERIFICATION DNS SECURISE (extension DNSSEC)
-
-    def useDNSSEC():
-        count = 0
-        for cap in [cap_login,cap_call,cap_screen,cap_msg]:
-            for pkt in cap:
-                if(pkt.dns.add_rr != '0'):
-                    count +=1 
-                    print("Extension détectée ! ")
-                    print(pkt)
-
-        print("Utilisation de l'extension DNSSEC : " , count!=0)
-        return count!=0
+    count = 0
+    for cap in [cap_login,cap_call,cap_screen,cap_msg]:
+        for pkt in cap:
+            if(pkt.dns.add_rr != '0'):
+                count +=1 
+                print("Extension détectée ! ")
+                print(pkt)
+    print("Utilisation de l'extension DNSSEC : " , count!=0)
 
 
 ### Statistiques Version TLS
@@ -64,10 +58,8 @@ if False :
         val.append(data)
 
 
-
-plot_TLS_version_repartition = False # mettre à True pour afficher le graphe
-
-if plot_TLS_version_repartition : 
+# Affiche la répartition des versions TLS
+def plot_TLS_version_repartition():
 
     x = ['Authentification', 'Appel audio-vidéo', 'Partage d\'écran' , 'Messagerie']
     cat = ["TLSv1.3","TLSv1.2"]
@@ -96,17 +88,8 @@ if plot_TLS_version_repartition :
     plt.show()
 
 
-### Analyse des certificats
-
-
-
-
-# Durée de vie des certificats ?
-
-ttl_certificates = False
-
-
-if ttl_certificates : 
+# Affiche la durée de vie des certificats
+def ttl_certificates (): 
 
     f_login = "packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng"
     f_call = "packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng"
@@ -135,12 +118,9 @@ if ttl_certificates :
     print(data)
 
 
-# Algo de chiffrement 
+# Affiche la répartition des algos de chiffrement pour les certificats
 # Ligne pour récupérer : pkt.tls.record.handshake.certificates.certificate_tree[i].algorithmIdentifier_element.id
-
-algochiffrement = False
-
-if algochiffrement : 
+def algochiffrement (): 
 
     f_login = "packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng"
     f_call = "packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng"
@@ -181,3 +161,17 @@ if algochiffrement :
             shadow=True, startangle=90, colors = ["tab:blue","tab:red"], wedgeprops={"alpha": 0.9} )
     plt.title("Algorithmes de chiffrement utilisés")
     plt.show()
+
+
+
+if __name__ == '__main__':
+    if sys.argv[1] == "checkDNSSEC":
+        check_DNSSEC()
+    elif sys.argv[1] == "TLS":
+        plot_TLS_version_repartition()
+    elif sys.argv[1] == "certTTL":
+        ttl_certificates()
+    elif sys.argv[1] == "algo":
+        algochiffrement()
+    else :
+        "Argument non reconnu"

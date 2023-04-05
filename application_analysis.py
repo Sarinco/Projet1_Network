@@ -1,11 +1,10 @@
 import pyshark
 import matplotlib.pyplot as plt
-import numpy as np
+import sys
 
 
-paquet_totaux = False
-
-if paquet_totaux : 
+# Plot le nombre de paquets totaux en fonction du temps
+def plot_pkt_tot() : 
     f_login = "packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng"
     f_call = "packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng"
     f_screen = "packet_traces/M_Linux/FileCapture_Any_Scenario3_Mathieu.pcapng"
@@ -52,9 +51,9 @@ if paquet_totaux :
     fig.tight_layout()
     plt.show()
 
-count_udp = False
 
-if count_udp : 
+# Calcul le volume de données udp échangées pour 1min audio, 1min audio-vidéo, 1 min partage d'écran
+def calcul_débit(): 
     f_audio = "packet_traces/M_Linux/FileCapture_Any_1min_audio.pcapng"
     f_video = "packet_traces/M_Linux/FileCapture_Any_1min_audiovideo.pcapng"
     f_screen = "packet_traces/M_Linux/FileCapture_Any_Scenario3_Mathieu.pcapng"
@@ -111,3 +110,10 @@ if count_udp :
     print("# Packets UDP - 1min partage écran = ", count_screen, " [bytes]")
 
 
+if __name__ == '__main__':
+    if sys.argv[1] == "plot_pkt":
+        plot_pkt_tot()
+    elif sys.argv[1] == "volume":
+        calcul_débit()
+    else :
+        "Argument non reconnu"

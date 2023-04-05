@@ -7,7 +7,6 @@ from os.path import isfile
 
 def computeexperimentTime(tracePath):
     """function that computes the time between the first and last packet of the trace
-
     Args:
         tracePath (pcapng file): a packet trace
     """
@@ -25,15 +24,9 @@ def computeexperimentTime(tracePath):
 def CountDNSPackets(tracePath):
     capture = ps.FileCapture(tracePath, display_filter='dns')
     print("capture de :" + tracePath)
-    # print(capture[0].dns.qry_name)
-    
     domainCount = 0
-    
     for pkt in capture:
         domainCount += 1
-      
-            
-            
     capture.close()
     return domainCount
 
@@ -54,7 +47,8 @@ def graphmaker(traceList):
     plt.xticks(rotation=30)
     plt.title("Nombre de noms de domaines résolus par trace")
     plt.tight_layout()
-    plt.savefig("graphs/dns_bar_graph.pdf")
+    #plt.savefig("graphs/dns_bar_graph.pdf")
+    plt.show()
     
     #plot a graph with the amount of dns packets per second for seven minutes
     fig, ax = plt.subplots(2, 2, sharey=True)
@@ -77,8 +71,6 @@ def graphmaker(traceList):
         ax[int(i/2), i%2].plot(timeOfPacket, color = colors[i], alpha = 0.9)
         ax[int(i/2), i%2].grid()
 
-        
-        
         cap.close()
     for a in ax.flat:
         a.set(xlabel='Temps [s]', ylabel='Nombre de paquets')
@@ -86,14 +78,26 @@ def graphmaker(traceList):
         a.label_outer()
 
     plt.tight_layout()
-    plt.savefig("graphs/dns_packetTime_graph.pdf")
+    #plt.savefig("graphs/dns_packetTime_graph.pdf")
+    plt.show()
     
 def dnsDomainNameResolved(trace):
         cap = ps.FileCapture(trace, display_filter='dns')
         print("capture de :" + trace)
+        data = {} # dictionnaire pour stocker proportion de chaque adresse
         for pkt in cap:
-            print(pkt.dns.qry_name)
+            q = pkt.dns.qry_name
+            if (q not in data.keys()):
+                data[q] = 1
+            else :
+                data[q] +=1 
+            print(q)
         cap.close()
+        """
+        print("RECAP : ", data)
+        for k in data.keys():
+            print("- {} ({})".format(k,data[k]))
+        """
         print("=======================================")
         
 def dnsAuthoritativeServer(trace):
@@ -123,7 +127,8 @@ def dnsAdditionalRecords(trace):
     print("=======================================")
     
 if __name__ == '__main__':
-    
+
+    # Fichier de captures    
     onlyfiles = ["packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng",
                  "packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng",
                  "packet_traces/M_Linux/FileCapture_Any_Scenario3_Mathieu.pcapng",
@@ -157,3 +162,44 @@ if __name__ == '__main__':
             print("nombre de paquets total: " + str(nbPacket))
             cap.close()
             print("=======================================") 
+    
+
+    # Ajout : DNS horizontal
+
+    dns_barh = False # mettre à True pour afficher graphique en batonnet horizontal
+
+    if dns_barh : 
+
+        f_login = "packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng"
+        f_call = "packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng"
+        f_screen = "packet_traces/M_Linux/FileCapture_Any_Scenario3_Mathieu.pcapng"
+        f_msg = "packet_traces/M_Linux/FileCapture_Any_Scenario4_Mathieu.pcapng"
+
+        cap_login = ps.FileCapture(f_login, display_filter='dns')
+        cap_call = ps.FileCapture(f_call, display_filter='dns')
+        cap_screen = ps.FileCapture(f_screen, display_filter='dns')
+        cap_msg = ps.FileCapture(f_msg, display_filter='dns')
+
+        data = []
+
+        caps = [cap_login, cap_call , cap_screen, cap_msg]
+        labels = ['Authentification', 'Appel audio-vidéo', 'Partage d\'écran' , 'Messagerie']
+        val = []
+
+        for cap in caps:
+            count = 0
+            for pkt in cap:
+                count +=1
+            val.append(count)
+
+
+        colors = ["tab:blue","tab:red", "tab:green", "tab:orange"]
+        pos = [0,0.5,1,1.5]
+        fig, ax = plt.subplots()
+        ax.barh(pos, val, align='center', color = colors, alpha=0.9, height=0.3)
+        ax.set_yticks(pos, labels=labels)
+        ax.invert_yaxis()
+        ax.set_title("Nombre de paquet DNS par scénarios")
+        plt.tight_layout()
+        plt.show()
+
