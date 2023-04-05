@@ -42,13 +42,11 @@ def to_seconds(dt_time):
 
 def graphmaker(traceList):
     """Function that makes a bar graph of the number of packets per dns protocol
-    
     Args:
         traceList (pcapng files): a list of packet trace
     """
     nbPacket = []
-    names = ["visioconférence micro+video", "visioconférence partage écran",
-             "messagerie intégrée", "lancement et connexion a l'appli"]
+    names = ['Authentification', 'Appel audio-vidéo', 'Partage d\'écran' , 'Messagerie']
     for traces in traceList:
         nbPacket.append(CountDNSPackets(traces))
     
@@ -56,11 +54,13 @@ def graphmaker(traceList):
     plt.xticks(rotation=30)
     plt.title("Nombre de noms de domaines résolus par trace")
     plt.tight_layout()
-    plt.savefig("graphs/dns_bar_graph.png")
+    plt.savefig("graphs/dns_bar_graph.pdf")
     
     #plot a graph with the amount of dns packets per second for seven minutes
     fig, ax = plt.subplots(2, 2, sharey=True)
     fig.suptitle("Nombre de paquets DNS par seconde par trace")
+
+    colors = ["tab:blue","tab:red", "tab:green", "tab:orange"]
     for i in range(len(traceList)):
         print("capture de :" + traceList[i])
         timeOfPacket = np.zeros(90)
@@ -74,18 +74,19 @@ def graphmaker(traceList):
             timeOfPacket[int((pkt.sniff_time-firstPacketTime).total_seconds())] += 1
         
         ax[int(i/2), i%2].set_title(names[i])
-        ax[int(i/2), i%2].plot(timeOfPacket)
+        ax[int(i/2), i%2].plot(timeOfPacket, color = colors[i], alpha = 0.9)
         ax[int(i/2), i%2].grid()
 
         
         
         cap.close()
     for a in ax.flat:
-        a.set(xlabel='temps (s)', ylabel='nombre de paquets')
+        a.set(xlabel='Temps [s]', ylabel='Nombre de paquets')
     for a in ax.flat:
         a.label_outer()
+
     plt.tight_layout()
-    plt.savefig("graphs/dns_packetTime_graph.png")
+    plt.savefig("graphs/dns_packetTime_graph.pdf")
     
 def dnsDomainNameResolved(trace):
         cap = ps.FileCapture(trace, display_filter='dns')
@@ -122,10 +123,12 @@ def dnsAdditionalRecords(trace):
     print("=======================================")
     
 if __name__ == '__main__':
-    onlyfiles = ["packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng",
+    
+    onlyfiles = ["packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng",
+                 "packet_traces/M_Linux/FileCapture_Any_Scenario2_Mathieu.pcapng",
                  "packet_traces/M_Linux/FileCapture_Any_Scenario3_Mathieu.pcapng",
                  "packet_traces/M_Linux/FileCapture_Any_Scenario4_Mathieu.pcapng",
-                 "packet_traces/M_Linux/FileCapture_Any_LaunchAndLogin.pcapng"]
+                ]
         
     
     if sys.argv[1] == "graph":
