@@ -1,4 +1,4 @@
-# LINFO1341 - Projet 1 : Analyse de traces d'un logiciel de vidéo-conférence (Groupe Zoom7)
+# P1 : Analyse de traces d'un logiciel de visio-conférence (Groupe Zoom7)
 
 Ce répertoire GitHub contient l'ensemble du code Python utilisant `PyShark` permettant l'analyse de nos traces capturées avec `WireShark`.
 
